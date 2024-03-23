@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "dgSpecHash": "8qzTnw8YyBa3USZVpkq7eUeyS5wA5KmT0XXNOS0Yvad/TkWxC09VjW7fQCJeu2yFwh/yswfnoIypbfAuc77IKQ==",
+  "success": true,
+  "projectFilePath": "C:\\Users\\khowe\\source\\repos\\Cosmogony\\Cosmogony\\Cosmogony.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\khowe\\.nuget\\packages\\newtonsoft.json\\13.0.3\\newtonsoft.json.13.0.3.nupkg.sha512"
+  ],
+  "logs": []
+}

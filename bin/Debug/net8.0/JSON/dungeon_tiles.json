@@ -1,0 +1,110 @@
+{
+    "Tiles": [
+        {
+            "Type": ".",
+            "Components": {
+                "RenderComponent": {
+                    "Symbol": ".",
+                    "Color": "Gray",
+                    "Initialized": true
+                },
+                "CollisionComponent": {
+                    "HasCollision": false,
+                    "Initialized": true
+                },
+                "ExploredComponent": {
+                    "IsExplored": false,
+                    "Initialized": true
+                },
+                "VisibleComponent": {
+                    "IsVisible": false,
+                    "Initialized": true
+                },
+                "TerrainComponent": {
+                    "Initialized": true
+                }
+            }
+        },
+        {
+            "Type": "#",
+            "Components": {
+                "RenderComponent": {
+                    "Symbol": "#",
+                    "Color": "DarkGray",
+                    "Initialized": true
+                },
+                "BlocksVisibilityComponent": {
+                    "Initialized": true
+                },
+                "CollisionComponent": {
+                    "HasCollision": true,
+                    "Initialized": true
+                },
+                "ExploredComponent": {
+                    "IsExplored": false,
+                    "Initialized": true
+                },
+                "VisibleComponent": {
+                    "IsVisible": false,
+                    "Initialized": true
+                },
+                "TerrainComponent": {
+                    "Initialized": true
+                }
+            }
+        },
+        {
+            "Type": "<",
+            "Components": {
+                "RenderComponent": {
+                    "Symbol": "<",
+                    "Color": "Red",
+                    "Initialized": true
+
+                },
+                "CollisionComponent": {
+                    "HasCollision": false,
+                    "Initialized": true
+                },
+                "ExploredComponent": {
+                    "IsExplored": false,
+                    "Initialized": true
+                },
+                "VisibleComponent": {
+                    "IsVisible": false,
+                    "Initialized": true
+                },
+                "TerrainComponent": {
+                    "Initialized": true
+                }
+            }
+        },
+        {
+            "Type": ">",
+            "Components": {
+                "RenderComponent": {
+                    "Symbol": ">",
+                    "Color": "Red",
+                    "Initialized": true
+
+                },
+                "CollisionComponent": {
+                    "HasCollision": false,
+                    "Initialized": true
+                },
+                "ExploredComponent": {
+                    "IsExplored": false,
+                    "Initialized": true
+                },
+                "VisibleComponent": {
+                    "IsVisible": false,
+                    "Initialized": true
+                },
+                "TerrainComponent": {
+                    "Initialized": true
+                }
+            }
+        }
+        // Add more tiles as needed
+    ]
+}
