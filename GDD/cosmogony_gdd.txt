@@ -15,6 +15,8 @@ dungeon instances they spawn using the keyword system
 End Game:
 Players will fight a final boss based on how they navigated the game
 
+**Add more gameplay elements here**
+
 Story Idea:
 
 So it came to pass that the Great Evil triumphed over the heroes, the Gods, and destroyed the entire world.

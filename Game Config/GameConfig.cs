@@ -14,6 +14,10 @@
 
     public int maxMessages {  get; private set; }
 
+    public string dungeonName { get; private set; }
+
+    public bool playerInputEnabled { get; set; }
+
     // Private constructor to prevent external instantiation
     private GameConfig()
     {
@@ -24,6 +28,8 @@
         gameHeight = 25; // Default height
         messageWidth = consoleWidth - gameWidth;
         maxMessages = 40;
+        dungeonName = "Proving Grounds";
+        playerInputEnabled = true;
     }
 
     // Method to configure the dimensions if needed

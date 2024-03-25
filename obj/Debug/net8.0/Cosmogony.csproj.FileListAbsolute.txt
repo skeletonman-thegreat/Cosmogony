@@ -16,3 +16,4 @@ C:\Users\khowe\source\repos\Cosmogony\Cosmogony\bin\Debug\net8.0\Newtonsoft.Json
 C:\Users\khowe\source\repos\Cosmogony\Cosmogony\obj\Debug\net8.0\Cosmogony.csproj.AssemblyReference.cache
 C:\Users\khowe\source\repos\Cosmogony\Cosmogony\obj\Debug\net8.0\Cosmogony.csproj.Up2Date
 C:\Users\khowe\source\repos\Cosmogony\Cosmogony\bin\Debug\net8.0\JSON\dungeon_tiles.json
+C:\Users\khowe\source\repos\Cosmogony\Cosmogony\obj\Debug\net8.0\Cosmogony.sourcelink.json

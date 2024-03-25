@@ -31,6 +31,7 @@
                     break;
                 case ConsoleKey.NumPad5:
                     // Stay in place (no movement)
+                    EmitMoveIntent(0, 0);
                     break;
                 case ConsoleKey.NumPad6:
                     EmitMoveIntent(1, 0);
@@ -45,10 +46,10 @@
                     EmitMoveIntent(1, -1);
                     break;
                 case ConsoleKey.OemPeriod:
-                    EventDispatcher.Emit(new LevelTransitionEvent(TransitionReason.Stairs, TransitionDirection.Descend));
+                    EventDispatcher.Emit(new LevelTransitionEvent(TransitionReason.Stairs, TransitionDirection.Descend, playerEntityID));
                     break;
                 case ConsoleKey.OemComma:
-                    EventDispatcher.Emit(new LevelTransitionEvent(TransitionReason.Stairs, TransitionDirection.Ascend));
+                    EventDispatcher.Emit(new LevelTransitionEvent(TransitionReason.Stairs, TransitionDirection.Ascend, playerEntityID));
                     break;
                 default:
                     break;

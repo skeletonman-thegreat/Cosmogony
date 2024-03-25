@@ -28,6 +28,7 @@ public class EntityInitializationSystem
                         Tile tile = tileDefinitions[tileChar];
                         List<ComponentTemplate> templates = ConvertToComponentTemplates(tile);
                         templates.Add(new PositionComponentTemplate(x, y, true)); // Add position based on tile location
+                        templates.Add(new WorldLocationComponentTemplate(GameConfig.Instance.dungeonName, e.LevelIndex));
                         EventDispatcher.Emit(new EntityCreationEvent(templates));
                     }
                 }

@@ -30,6 +30,16 @@
         GetComponentArray<T>().RemoveComponent(entityId);
     }
 
+    public void RemoveAllComponents(int entityId)
+    {
+        foreach (var componentArrayObj in componentArrays.Values)
+        {
+            var componentArray = componentArrayObj as IComponentArray;
+            componentArray?.RemoveComponent(entityId);
+        }
+    }
+
+
     public T GetComponent<T>(int entityId) where T : struct
     {
         return GetComponentArray<T>().GetComponent(entityId);
@@ -90,14 +100,15 @@
     public void UpdateComponent<T>(int entityId, T component) where T : struct
     {
         var type = typeof(T);
-
-        if (!componentArrays.ContainsKey(type))
+        if (componentArrays.TryGetValue(type, out var componentArrayObj))
+        {
+            var componentArray = (IComponentArray)componentArrayObj;
+            componentArray.UpdateComponent(entityId, component); // component is boxed into an object here
+        }
+        else
         {
             throw new Exception($"Component type {type} not found.");
         }
-
-        var componentArray = (ComponentArray<T>)componentArrays[type];
-        componentArray.UpdateComponent(entityId, component);
     }
 
 

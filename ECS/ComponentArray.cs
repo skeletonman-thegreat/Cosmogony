@@ -1,4 +1,4 @@
-﻿public class ComponentArray<T> where T : struct
+﻿public class ComponentArray<T> : IComponentArray where T : struct
 {
     private T[] components;
     private int[] entityToIndex; //Maps entity IDs to component array indices
@@ -83,4 +83,30 @@
         }
     }
 
+    void IComponentArray.AddComponent(int entityId)
+    {
+        throw new NotImplementedException();
+    }
+
+    void IComponentArray.RemoveComponent(int entityId)
+    {
+        this.RemoveComponent(entityId);
+    }
+
+    public void UpdateComponent(int entityId, object component)
+    {
+        if (component is T typedComponent)
+        {
+            UpdateComponent(entityId, typedComponent); // Call the generic version
+        }
+        else
+        {
+            throw new ArgumentException($"Component type mismatch. Expected type {typeof(T).Name}.");
+        }
+    }
+
+    bool IComponentArray.HasComponent(int entityId)
+    {
+        return this.HasComponent(entityId);
+    }
 }

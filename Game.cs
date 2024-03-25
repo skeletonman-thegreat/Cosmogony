@@ -20,6 +20,7 @@
     private WorldSystem worldSystem;
     private EntityInitializationSystem entityInitializationSystem;
     private EntityFactorySystem entityFactorySystem;
+    private EntityDestructionSystem entityDestructionSystem;
     private LevelTransitionSystem levelTransitionSystem;
 
     //Player
@@ -49,7 +50,8 @@
         worldSystem = new WorldSystem();
         entityInitializationSystem = new EntityInitializationSystem();
         entityFactorySystem = new EntityFactorySystem(entityManager, componentManager);
-        levelTransitionSystem = new LevelTransitionSystem(worldSystem);
+        entityDestructionSystem = new EntityDestructionSystem(componentManager, entityManager);
+        levelTransitionSystem = new LevelTransitionSystem(worldSystem, componentManager);
 
 
         //Start the main game loop
@@ -73,6 +75,7 @@
         componentManager.AddComponent(playerEntityId, new CollisionComponent { HasCollision = true });
         componentManager.AddComponent(playerEntityId, new VisibleComponent { IsVisible = true });
         componentManager.AddComponent(playerEntityId, new MoveIntentComponent { Dx = 0, Dy = 0 });
+        componentManager.AddComponent(playerEntityId, new WorldLocationComponent { DungeonName = GameConfig.Instance.dungeonName, FloorNumber = 0 });
         componentManager.AddComponent(playerEntityId, new PlayerComponent { });
 
         EventDispatcher.Emit(new DungeonFloorCreationEvent(0));
@@ -104,7 +107,7 @@
         {
             if(!isRunning) break;
             messageLogSystem.DisplayMessages();
-            inputHandlingSystem.ProcessInput();
+            if(GameConfig.Instance.playerInputEnabled) { inputHandlingSystem.ProcessInput(); }
 
             Thread.Sleep(20); //time to sleep to prevent loop from running too fast!
         }

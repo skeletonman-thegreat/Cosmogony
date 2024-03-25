@@ -1,13 +1,15 @@
 ﻿public class LevelTransitionEvent
 {
     public int TargetLevel { get; }
+    public int EntityId;
     public TransitionReason Reason { get; }
     public TransitionDirection Direction { get; }
 
-    public LevelTransitionEvent(TransitionReason reason, TransitionDirection direction)
+    public LevelTransitionEvent(TransitionReason reason, TransitionDirection direction, int entityId)
     {
         Reason = reason;
         Direction = direction;
+        EntityId = entityId;
     }
 }
 

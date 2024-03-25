@@ -18,4 +18,5 @@ public class Components
     public BlocksVisibilityComponent BlocksVisibilityComponent { get; set; }
     public TerrainComponent TerrainComponent { get; set; }
     public PriorityDrawComponent PriorityDrawComponent { get; set; }
+    public WorldLocationComponent WorldLocationComponent { get; set; }
 }

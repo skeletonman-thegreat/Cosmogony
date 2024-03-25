@@ -12,6 +12,7 @@
 
     public void HandleEntityDestructionEvent(EntityDestructionEvent e)
     {
+        componentManager.RemoveAllComponents(e.EntityID);
         entityManager.DestroyEntity(e.EntityID);
     }
 }
