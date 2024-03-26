@@ -1,6 +1,4 @@
-﻿using System.Reflection;
-
-public class Game
+﻿public class GameplayState : IGameState
 {
     //ECS Strongmen
     private EntityManager entityManager;
@@ -25,35 +23,38 @@ public class Game
     private EntityDestructionSystem entityDestructionSystem;
     private LevelTransitionSystem levelTransitionSystem;
 
-    HashSet<Type> typesToProcess = new HashSet<Type>
-        {
-            typeof(DungeonFloorCreationEvent),
-            typeof(EntityCreationEvent),
-            typeof(EntityDestructionEvent),
-            typeof(EntityInitializationEvent),
-            typeof(EntityRenderEvent),
-            typeof(LevelLoadedEvent),
-            typeof(LevelTransitionEvent),
-            typeof(MessageEvent),
-            typeof(MovementCompletedEvent),
-            typeof(MovementIntentEvent),
-            typeof(VisibilityChangeEvent)
-        };
-
     //Player
     private PlayerInitializationSystem playerInitializationSystem;
 
-    public bool isRunning { get; private set; }
+    public GameplayState(EntityManager entityManager, ComponentManager componentManager, MessageLogSystem messageLogSystem, PositionSystem positionSystem,
+        MovementSystem movementSystem, InputHandlingSystem inputHandlingSystem, FieldOfViewSystem fovSystem, Renderer renderer, WorldSystem worldSystem,
+        EntityInitializationSystem entityInitializationSystem, EntityFactorySystem entityFactorySystem, EntityDestructionSystem entityDestructionSystem, 
+        LevelTransitionSystem levelTransitionSystem, PlayerInitializationSystem playerInitializationSystem)
+    {
+        this.entityManager = entityManager;
+        this.componentManager = componentManager;
+        this.messageLogSystem = messageLogSystem;
+        this.positionSystem = positionSystem;
+        this.movementSystem = movementSystem;
+        this.inputHandlingSystem = inputHandlingSystem;
+        this.fovSystem = fovSystem;
+        this.renderer = renderer;
+        this.worldSystem = worldSystem;
+        this.entityInitializationSystem = entityInitializationSystem;
+        this.entityFactorySystem = entityFactorySystem;
+        this.entityDestructionSystem = entityDestructionSystem;
+        this.levelTransitionSystem = levelTransitionSystem;
+        this.playerInitializationSystem = playerInitializationSystem;
+    }
 
-    public Game()
+    public void Enter()
     {
         //ECS strongmen
         entityManager = new EntityManager();
         componentManager = new ComponentManager(entityManager);
 
         //Message Log
-        messageLogSystem = new MessageLogSystem(GameConfig.Instance.maxMessages);
-        EventDispatcher.Subscribe<MessageEvent>(OnMessageReceived);
+        messageLogSystem = new MessageLogSystem(GameConfig.Instance.maxMessages)
 
         //Positioning/Movement
         positionSystem = new PositionSystem(componentManager);
@@ -70,22 +71,10 @@ public class Game
         entityDestructionSystem = new EntityDestructionSystem(componentManager, entityManager);
         levelTransitionSystem = new LevelTransitionSystem(worldSystem, componentManager);
 
-        //Start the main game loop
-        InitializeGame();
-        isRunning = true;
-    }
-
-    //hey ding dong, if you're reading this, you need to actually create some methods or something to actually USE your systems
-    //ffs dude, get your shit together!
-
-    public void InitializeGame()
-    {
-        LogGameMessage("Game is loading, please wait patiently! (:");
-
         //Player
         int playerEntityId = entityManager.CreateEntity();
         playerInitializationSystem = new PlayerInitializationSystem(componentManager, playerEntityId);
-        componentManager.AddComponent(playerEntityId, new PriorityDrawComponent {Initialized = true });
+        componentManager.AddComponent(playerEntityId, new PriorityDrawComponent { Initialized = true });
         componentManager.AddComponent(playerEntityId, new PositionComponent { X = 0, Y = 0, IsValid = true });
         componentManager.AddComponent(playerEntityId, new RenderComponent { Symbol = '@', Color = ConsoleColor.Green });
         componentManager.AddComponent(playerEntityId, new CollisionComponent { HasCollision = true });
@@ -97,34 +86,20 @@ public class Game
         EventDispatcher.Emit(new DungeonFloorCreationEvent(0));
 
         inputHandlingSystem = new InputHandlingSystem(playerEntityId, fovSystem);
-
-        //fovSystem.UpdateVisibility(playerEntityId);
-
-        // Further initialization as needed...
     }
 
-    public void OnMessageReceived(object e)
+    public void Exit()
     {
-        var eventInstance = (MessageEvent)e;
-        //Log the message to the message system
-        messageLogSystem.LogMessage(eventInstance.Message);
+        // Cleanup, unsubscribe from events, etc.
     }
 
-    public void LogGameMessage(string message)
+    public void Update()
     {
-        // Emit a message event
-        EventDispatcher.Emit(new MessageEvent(message));
+        // Update game logic
     }
 
-
-    public void Run()
+    public void Render()
     {
-        while (isRunning)
-        {
-            if(!isRunning) break;
-            messageLogSystem.DisplayMessages();
-            if(GameConfig.Instance.playerInputEnabled) { inputHandlingSystem.ProcessInput(); }
-            Thread.Sleep(20); //time to sleep to prevent loop from running too fast!
-        }
+        // Render game
     }
 }

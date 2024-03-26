@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Cosmogony")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+075ce1981fc12c37a420d6b00d0c031551c4f20a")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+59828aacf39aa7eed2d6f55b47516b30d787180a")]
 [assembly: System.Reflection.AssemblyProductAttribute("Cosmogony")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Cosmogony")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
