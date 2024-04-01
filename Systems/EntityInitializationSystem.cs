@@ -88,6 +88,11 @@ public class EntityInitializationSystem
         {
             templates.Add(new PriorityDrawComponentTemplate());
         }
+        if(tile.Components.ExplorationGoalComponent.Initialized)
+        {
+            templates.Add(new ExplorationGoalComponentTemplate(tile.Components.ExplorationGoalComponent.Attractiveness, 
+                tile.Components.ExplorationGoalComponent.IsExplored));
+        }
 
         // Add more component templates based on your JSON structure and ECS design
 

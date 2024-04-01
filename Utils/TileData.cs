@@ -19,4 +19,5 @@ public class Components
     public TerrainComponent TerrainComponent { get; set; }
     public PriorityDrawComponent PriorityDrawComponent { get; set; }
     public WorldLocationComponent WorldLocationComponent { get; set; }
+    public ExplorationGoalComponent ExplorationGoalComponent { get; set; }
 }

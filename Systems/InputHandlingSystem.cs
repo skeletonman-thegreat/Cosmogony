@@ -2,6 +2,7 @@
 {
     private int playerEntityID;
     private readonly FieldOfViewSystem fovSystem;
+    private bool isAutoExploring = false;
 
     public InputHandlingSystem(int playerEntityID, FieldOfViewSystem fovSystem)
     {
@@ -15,8 +16,29 @@
         {
             ConsoleKeyInfo keyInfo = Console.ReadKey(intercept: true);
 
+            if (isAutoExploring && keyInfo.Key != ConsoleKey.Z)
+            {
+                isAutoExploring = false; // Stop auto-exploration
+                EventDispatcher.Emit(new AutoExploreInterruptEvent(playerEntityID));
+                return; // Optionally return early to ignore other inputs during cancellation
+            }
+
             switch (keyInfo.Key)
             {
+                case ConsoleKey.Z:
+                    // Toggle auto-exploration state
+                    isAutoExploring = !isAutoExploring;
+                    if (isAutoExploring)
+                    {
+                        // Start auto-exploration
+                        EventDispatcher.Emit(new AutoExploreEvent(playerEntityID));
+                    }
+                    else
+                    {
+                        // Manually cancel auto-exploration
+                        EventDispatcher.Emit(new AutoExploreInterruptEvent(playerEntityID));
+                    }
+                    break;
                 case ConsoleKey.NumPad1:
                     EmitMoveIntent(-1, 1);
                     break;
@@ -52,6 +74,12 @@
                     EventDispatcher.Emit(new LevelTransitionEvent(TransitionReason.Stairs, TransitionDirection.Ascend, playerEntityID));
                     break;
                 default:
+                    // If any key other than the auto-explore toggle is pressed, ensure auto-explore is stopped
+                    if (isAutoExploring)
+                    {
+                        isAutoExploring = false;
+                        EventDispatcher.Emit(new AutoExploreInterruptEvent(playerEntityID));
+                    }
                     break;
             }
         }

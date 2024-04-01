@@ -7,7 +7,7 @@
     {
         this.worldSystem = worldSystem;
         this.componentManager = componentManager;
-        EventDispatcher.Subscribe<LevelTransitionEvent>(e => HandleLevelTransition((LevelTransitionEvent)e));
+        EventDispatcher.Subscribe<LevelTransitionEvent>(HandleLevelTransition);
     }
 
     private void HandleLevelTransition(LevelTransitionEvent e)
@@ -43,6 +43,7 @@
                     // Update the current level index after handling.
                     worldSystem.CurrentLevelIndex = targetLevel;
                     EmitEntityInitializationEvent(newLevel);
+                    EventDispatcher.Emit(new LevelLoadedEvent(worldSystem.GetCurrentLevel().StairsUp));
                 }
                 else
                 {
@@ -62,14 +63,22 @@
                     EmitEntityInitializationEvent(existingLevel);
                     EventDispatcher.Emit(new LevelLoadedEvent(worldSystem.GetCurrentLevel().StairsDown));
                 }
+                else if (ValidateDescent(e.EntityId))
+                {
+                    // Destroy current level entities before transition
+                    DestroyCurrentLevelEntities();
+                    // For existing levels, initialize entities with the existing map.
+                    DungeonLevel existingLevel = worldSystem.GetLevelByIndex(targetLevel);
+                    // Update the current level index after handling.
+                    worldSystem.CurrentLevelIndex = targetLevel;
+                    EmitEntityInitializationEvent(existingLevel);
+                    EventDispatcher.Emit(new LevelLoadedEvent(worldSystem.GetCurrentLevel().StairsUp));
+                }
                 else
                 {
                     EventDispatcher.Emit(new MessageEvent("You wish, pray, but no stairs appear!"));
                 }
             }
-            //Clear the console:
-            //Console.Clear();
-            EventDispatcher.Emit(new MovementCompletedEvent(e.EntityId, componentManager.GetComponent<PositionComponent>(e.EntityId).X, componentManager.GetComponent<PositionComponent>(e.EntityId).Y));
             //Restore Control to the player
             GameConfig.Instance.playerInputEnabled = true;
         }

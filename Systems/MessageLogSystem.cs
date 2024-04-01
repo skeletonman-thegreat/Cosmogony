@@ -10,6 +10,7 @@
     public MessageLogSystem(int maxMessages)
     {
         this.maxMessages = maxMessages;
+        EventDispatcher.Subscribe<MessageEvent>(OnMessageEvent);
     }
 
     public void OnMessageEvent(MessageEvent messageEvent)

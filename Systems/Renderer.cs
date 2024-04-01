@@ -5,7 +5,7 @@
     {
         // Wrap the method call in a lambda that casts the event to the correct type
         //EventDispatcher.Subscribe<EntityRenderEvent>(e => OnEntityRenderEvent((EntityRenderEvent)e));
-        EventDispatcher.Subscribe<VisibilityChangeEvent>(e => OnVisibilityChangeEvent((VisibilityChangeEvent)e));
+        EventDispatcher.Subscribe<VisibilityChangeEvent>(OnVisibilityChangeEvent);
         this.componentManager = componentManager;
     }
 

@@ -7,7 +7,7 @@
     {
         this.componentManager = componentManager;
         this.entityManager = entityManager;
-        EventDispatcher.Subscribe<EntityDestructionEvent>(e => HandleEntityDestructionEvent((EntityDestructionEvent)e));
+        EventDispatcher.Subscribe<EntityDestructionEvent>(HandleEntityDestructionEvent);
     }
 
     public void HandleEntityDestructionEvent(EntityDestructionEvent e)

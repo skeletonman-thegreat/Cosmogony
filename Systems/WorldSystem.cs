@@ -6,7 +6,7 @@
     public WorldSystem()
     {
         this.levels = new List<DungeonLevel>();
-        EventDispatcher.Subscribe<DungeonFloorCreationEvent>(e => HandleDungeonFloorCreation((DungeonFloorCreationEvent)e));
+        EventDispatcher.Subscribe<DungeonFloorCreationEvent>(HandleDungeonFloorCreation);
     }
 
     private void HandleDungeonFloorCreation(DungeonFloorCreationEvent e)

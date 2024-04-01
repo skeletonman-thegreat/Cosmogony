@@ -1,26 +1,31 @@
 ﻿public static class EventDispatcher
 {
-    private static Dictionary<Type, List<Action<object>>> listeners = new Dictionary<Type, List<Action<object>>>();
-    private static Dictionary<Type, Queue<object>> eventQueues = new Dictionary<Type, Queue<object>>();
+    private static Dictionary<Type, List<Delegate>> listeners = new Dictionary<Type, List<Delegate>>();
+    private static readonly Dictionary<Type, Queue<object>> eventQueues = new Dictionary<Type, Queue<object>>();
 
-    public static void Subscribe<T>(Action<object> listener)
+    public static void Subscribe<T>(Action<T> listener) where T : class
     {
         var type = typeof(T);
         if (!listeners.ContainsKey(type))
         {
-            listeners[type] = new List<Action<object>>();
+            listeners[type] = new List<Delegate>();
         }
         listeners[type].Add(listener);
     }
 
-    public static void Emit<T>(T eventInstance)
+
+    public static void Emit<T>(T eventInstance) where T : class
     {
         var type = typeof(T);
-        if (!eventQueues.ContainsKey(type))
+        if (listeners.ContainsKey(type))
         {
-            eventQueues[type] = new Queue<object>();
+            foreach (var delegateObj in listeners[type])
+            {
+                // Safely cast back to the correct delegate type.
+                var listener = (Action<T>)delegateObj;
+                listener(eventInstance);
+            }
         }
-        eventQueues[type].Enqueue(eventInstance);
     }
 
     // Process all events for a specific type
@@ -31,11 +36,12 @@
         {
             while (queue.Count > 0)
             {
-                var eventInstance = queue.Dequeue();
-                if (listeners.ContainsKey(type))
+                var eventInstance = (T)queue.Dequeue(); // Assume the queue is Queue<object> for generic handling
+                if (listeners.TryGetValue(type, out var eventListeners))
                 {
-                    foreach (var listener in listeners[type])
+                    foreach (Delegate del in eventListeners)
                     {
+                        var listener = (Action<T>)del;
                         listener(eventInstance);
                     }
                 }
@@ -43,22 +49,14 @@
         }
     }
 
-    // Optionally: Method to process a single event of each type, if you want to spread out processing
-    public static void ProcessOneEventPerType()
+    // Check if there are any pending events for a specific type
+    public static bool HasPendingEvents<T>() where T : class
     {
-        foreach (var type in eventQueues.Keys.ToList())
+        var type = typeof(T);
+        if (eventQueues.TryGetValue(type, out var queue))
         {
-            if (eventQueues[type].Count > 0)
-            {
-                var eventInstance = eventQueues[type].Dequeue();
-                if (listeners.ContainsKey(type))
-                {
-                    foreach (var listener in listeners[type])
-                    {
-                        listener(eventInstance);
-                    }
-                }
-            }
+            return queue.Count > 0;
         }
+        return false;
     }
 }

@@ -13,6 +13,7 @@ public class Game
     private PositionSystem positionSystem;
     private MovementSystem movementSystem;
     private InputHandlingSystem inputHandlingSystem;
+    private AutoExploreSystem autoExploreSystem;
 
     //Rendering/FOV
     private FieldOfViewSystem fovSystem;
@@ -24,21 +25,7 @@ public class Game
     private EntityFactorySystem entityFactorySystem;
     private EntityDestructionSystem entityDestructionSystem;
     private LevelTransitionSystem levelTransitionSystem;
-
-    HashSet<Type> typesToProcess = new HashSet<Type>
-        {
-            typeof(DungeonFloorCreationEvent),
-            typeof(EntityCreationEvent),
-            typeof(EntityDestructionEvent),
-            typeof(EntityInitializationEvent),
-            typeof(EntityRenderEvent),
-            typeof(LevelLoadedEvent),
-            typeof(LevelTransitionEvent),
-            typeof(MessageEvent),
-            typeof(MovementCompletedEvent),
-            typeof(MovementIntentEvent),
-            typeof(VisibilityChangeEvent)
-        };
+    private MapUpdateSystem mapUpdateSystem;
 
     //Player
     private PlayerInitializationSystem playerInitializationSystem;
@@ -53,7 +40,6 @@ public class Game
 
         //Message Log
         messageLogSystem = new MessageLogSystem(GameConfig.Instance.maxMessages);
-        EventDispatcher.Subscribe<MessageEvent>(OnMessageReceived);
 
         //Positioning/Movement
         positionSystem = new PositionSystem(componentManager);
@@ -70,23 +56,21 @@ public class Game
         entityDestructionSystem = new EntityDestructionSystem(componentManager, entityManager);
         levelTransitionSystem = new LevelTransitionSystem(worldSystem, componentManager);
 
-        //Start the main game loop
-        InitializeGame();
-        isRunning = true;
-    }
-
-    //hey ding dong, if you're reading this, you need to actually create some methods or something to actually USE your systems
-    //ffs dude, get your shit together!
-
-    public void InitializeGame()
-    {
-        LogGameMessage("Game is loading, please wait patiently! (:");
-
         //Player
         int playerEntityId = entityManager.CreateEntity();
-        playerInitializationSystem = new PlayerInitializationSystem(componentManager, playerEntityId);
-        componentManager.AddComponent(playerEntityId, new PriorityDrawComponent {Initialized = true });
         componentManager.AddComponent(playerEntityId, new PositionComponent { X = 0, Y = 0, IsValid = true });
+
+        playerInitializationSystem = new PlayerInitializationSystem(componentManager, playerEntityId);
+
+        InitializeGame(playerEntityId);
+        autoExploreSystem = new AutoExploreSystem(componentManager, positionSystem, worldSystem, playerEntityId);
+        isRunning = true;
+
+    }
+
+    public void InitializeGame(int playerEntityId)
+    {
+        componentManager.AddComponent(playerEntityId, new PriorityDrawComponent { Initialized = true });
         componentManager.AddComponent(playerEntityId, new RenderComponent { Symbol = '@', Color = ConsoleColor.Green });
         componentManager.AddComponent(playerEntityId, new CollisionComponent { HasCollision = true });
         componentManager.AddComponent(playerEntityId, new VisibleComponent { IsVisible = true });
@@ -97,34 +81,54 @@ public class Game
         EventDispatcher.Emit(new DungeonFloorCreationEvent(0));
 
         inputHandlingSystem = new InputHandlingSystem(playerEntityId, fovSystem);
-
-        //fovSystem.UpdateVisibility(playerEntityId);
-
-        // Further initialization as needed...
     }
 
-    public void OnMessageReceived(object e)
+    public void Update()
     {
-        var eventInstance = (MessageEvent)e;
-        //Log the message to the message system
-        messageLogSystem.LogMessage(eventInstance.Message);
+        // Phase 1: Cleanup
+        EventDispatcher.ProcessEventsOfType<EntityDestructionEvent>();
+        // Ensure all cleanup is done before proceeding
+        if (!EventDispatcher.HasPendingEvents<EntityDestructionEvent>())
+        {
+            // Phase 2: Setup New Floor
+            EventDispatcher.ProcessEventsOfType<LevelTransitionEvent>();
+            EventDispatcher.ProcessEventsOfType<DungeonFloorCreationEvent>();
+            EventDispatcher.ProcessEventsOfType<EntityInitializationEvent>();
+            EventDispatcher.ProcessEventsOfType<EntityCreationEvent>();
+            EventDispatcher.ProcessEventsOfType<LevelLoadedEvent>();
+        }
+
+        // Assuming setup is complete, proceed to gameplay and rendering
+        if (!EventDispatcher.HasPendingEvents<DungeonFloorCreationEvent>() &&
+            !EventDispatcher.HasPendingEvents<EntityInitializationEvent>() &&
+            !EventDispatcher.HasPendingEvents<EntityCreationEvent>() &&
+            !EventDispatcher.HasPendingEvents<LevelTransitionEvent>() &&
+            !EventDispatcher.HasPendingEvents<LevelLoadedEvent>() &&
+            !EventDispatcher.HasPendingEvents<EntityDestructionEvent>())
+        {
+            // Rendering phase
+            EventDispatcher.ProcessEventsOfType<VisibilityChangeEvent>();
+            EventDispatcher.ProcessEventsOfType<EntityRenderEvent>();
+
+            // Gameplay phase
+            EventDispatcher.ProcessEventsOfType<MovementIntentEvent>();
+            EventDispatcher.ProcessEventsOfType<MovementCompletedEvent>();
+
+            //Messages
+            EventDispatcher.ProcessEventsOfType<MessageEvent>();
+        }
     }
 
-    public void LogGameMessage(string message)
-    {
-        // Emit a message event
-        EventDispatcher.Emit(new MessageEvent(message));
-    }
 
 
     public void Run()
     {
         while (isRunning)
         {
-            if(!isRunning) break;
+            Update();
+            inputHandlingSystem.ProcessInput();
             messageLogSystem.DisplayMessages();
-            if(GameConfig.Instance.playerInputEnabled) { inputHandlingSystem.ProcessInput(); }
-            Thread.Sleep(20); //time to sleep to prevent loop from running too fast!
+
         }
     }
 }

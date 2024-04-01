@@ -7,15 +7,14 @@
     {
         this.componentManager = componentManager;
         this.playerEntityId = playerEntityId;
-        EventDispatcher.Subscribe<LevelLoadedEvent>(e => OnLevelLoaded((LevelLoadedEvent)e));
+        EventDispatcher.Subscribe<LevelLoadedEvent>(OnLevelLoaded);
     }
 
     private void OnLevelLoaded(LevelLoadedEvent e)
     {
         Point spawnPoint = e.SpawnPoint;
         componentManager.UpdateComponent(playerEntityId, new PositionComponent { X = spawnPoint.X, Y = spawnPoint.Y, IsValid = true });
-        EventDispatcher.Emit(new MovementCompletedEvent(playerEntityId, spawnPoint.X, spawnPoint.Y));
         // Trigger visibility update or any other initial setup required for the player
-        // This could involve emitting another event or directly invoking the necessary systems/methods
+        EventDispatcher.Emit(new MovementCompletedEvent(playerEntityId, componentManager.GetComponent<PositionComponent>(playerEntityId).X, componentManager.GetComponent<PositionComponent>(playerEntityId).Y));
     }
 }

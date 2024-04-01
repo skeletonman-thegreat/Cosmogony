@@ -22,6 +22,11 @@
                 },
                 "TerrainComponent": {
                     "Initialized": true
+                },
+                "ExplorationGoalComponent": {
+                    "Initialized": true,
+                    "Attractiveness": 1,
+                    "IsExplored": false
                 }
             }
         },
@@ -50,6 +55,11 @@
                 },
                 "TerrainComponent": {
                     "Initialized": true
+                },
+                "ExplorationGoalComponent": {
+                    "Initialized": true,
+                    "Attractiveness": 0,
+                    "IsExplored": false
                 }
             }
         },
@@ -76,6 +86,11 @@
                 },
                 "TerrainComponent": {
                     "Initialized": true
+                },
+                "ExplorationGoalComponent": {
+                    "Initialized": true,
+                    "Attractiveness": 5,
+                    "IsExplored": false
                 }
             }
         },
@@ -102,6 +117,11 @@
                 },
                 "TerrainComponent": {
                     "Initialized": true
+                },
+                "ExplorationGoalComponent": {
+                    "Initialized": true,
+                    "Attractiveness": 5,
+                    "IsExplored": false
                 }
             }
         }

@@ -7,7 +7,7 @@
     {
         this.componentManager = componentManager;
         this.positionSystem = positionSystem;
-        EventDispatcher.Subscribe<MovementIntentEvent>(e => HandleMovementIntent((MovementIntentEvent)e));
+        EventDispatcher.Subscribe<MovementIntentEvent>(HandleMovementIntent);
     }
 
     private void HandleMovementIntent(MovementIntentEvent e)

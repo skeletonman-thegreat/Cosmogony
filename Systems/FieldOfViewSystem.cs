@@ -13,7 +13,7 @@
         this.positionSystem = positionSystem;
         this.fovRadius = fovRadius;
 
-        EventDispatcher.Subscribe<MovementCompletedEvent>(e => OnMovementCompleted((MovementCompletedEvent)e));
+        EventDispatcher.Subscribe<MovementCompletedEvent>(OnMovementCompleted);
     }
 
     public void OnMovementCompleted(MovementCompletedEvent e)

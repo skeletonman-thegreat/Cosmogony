@@ -7,7 +7,7 @@
     {
         this.entityManager = entityManager;
         this.componentManager = componentManager;
-        EventDispatcher.Subscribe<EntityCreationEvent>(e => HandleEntityCreationEvent((EntityCreationEvent)e));
+        EventDispatcher.Subscribe<EntityCreationEvent>(HandleEntityCreationEvent);
     }
 
     private void HandleEntityCreationEvent(EntityCreationEvent e)
