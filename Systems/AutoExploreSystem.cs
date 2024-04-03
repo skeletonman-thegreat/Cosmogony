@@ -110,6 +110,7 @@
                 if (entityAtPosition.HasValue && !componentManager.HasComponent<PlayerComponent>(entityAtPosition.Value))
                 {
                     var goalComponent = componentManager.GetComponent<ExplorationGoalComponent>(entityAtPosition.Value);
+                    var isVisibleComponent = componentManager.GetComponent<VisibleComponent>(entityAtPosition.Value);
                     if (!goalComponent.IsExplored && goalComponent.Attractiveness > bestAttractiveness)
                     {
                         bestAttractiveness = goalComponent.Attractiveness;

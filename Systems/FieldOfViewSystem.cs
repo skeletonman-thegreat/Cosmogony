@@ -69,10 +69,13 @@
         var visibleComp = componentManager.GetComponent<VisibleComponent>(entityId);
         visibleComp.IsVisible = true;
         componentManager.UpdateComponent(entityId, visibleComp);
+        if(!componentManager.HasComponent<PlayerComponent>(entityId))
+        {
+            var exploredComp = componentManager.GetComponent<ExplorationGoalComponent>(entityId);
+            exploredComp.IsExplored = true;
+            componentManager.UpdateComponent(entityId, exploredComp);
+        }
     }
-
-
-
 
     private bool IsInBounds(int x, int y)
     {
